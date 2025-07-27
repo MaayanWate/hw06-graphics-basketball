@@ -1,6 +1,6 @@
 import express from 'express';
 import path from 'path';
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from 'url';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,4 +19,4 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
 console.log(`Example app listening on port ${port}`)
-})  
+})

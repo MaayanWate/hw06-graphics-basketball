@@ -1,15 +1,202 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>HW5</title>
-		<style>
-			body { margin: 0; }
-		</style>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'></script>
-	</head>
-	<body>
-		<script src="src/hw5.js" type="module"></script>
+  <head>
+    <meta charset="utf-8" />
+    <title>HW6</title>
 
-	</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #000;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: white;
+      }
+
+      /* Top score box */
+      #scoreboard {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 2px solid #fff;
+        border-radius: 10px;
+        padding: 15px 25px;
+        text-align: center;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        min-width: 220px;
+        z-index: 2;
+      }
+
+      #scoreboard p {
+        margin: 6px 0;
+        font-size: 16px;
+      }
+
+      #timerText {
+        font-size: 20px;
+        font-weight: bold;
+        color: #ff8080;
+        margin-bottom: 10px;
+      }
+
+      #messageText {
+        font-weight: bold;
+        font-size: 18px;
+        color: #ffd700;
+        margin-top: 10px;
+      }
+
+      /* Bottom instruction box */
+      #instructionsBox {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        transform: none;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 2px solid #fff;
+        border-radius: 10px;
+        padding: 15px 25px;
+        text-align: left;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        min-width: 260px;
+        z-index: 2;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .instruction-line {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .label {
+        color: white;
+        font-weight: bold;
+      }
+
+      .key {
+        color: #ccc;
+      }
+
+      /* Summary table */
+      #summaryScreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.9);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+      }
+
+      #summaryBox {
+        background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
+        padding: 40px 60px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+        animation: popIn 0.8s ease-out forwards;
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      @keyframes popIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      #summaryBox h2 {
+        color: #ff6f61;
+        font-size: 28px;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+      }
+
+      #summaryBox p {
+        margin: 10px 0;
+        font-size: 18px;
+        color: #f0f0f0;
+      }
+
+      #restartBtn {
+        margin-top: 25px;
+        padding: 12px 25px;
+        font-size: 17px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #34c759, #30b457);
+        color: white;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.3s;
+      }
+
+      #restartBtn:hover {
+        background: linear-gradient(135deg, #28a428, #249f24);
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+
+  <body>
+    <script src="src/hw6.js" type="module"></script>
+
+    <!-- Score box-->
+    <div id="scoreboard">
+      <p id="timerText">Time Left: 60s</p>
+      <p id="totalAttemptsText">Attempts: 0</p>
+      <p id="successfulShotsText">Successful Shots: 0</p>
+      <p id="accuracyText">Accuracy: 0%</p>
+      <p id="totalScoreText">Total Score: 0</p>
+      <p id="highScoreText">High Score 🏆: 0</p>
+      <p id="messageText"></p>
+    </div>
+
+    <!-- instruction box-->
+    <div id="instructionsBox">
+      <div class="instruction-line">
+        <span class="label">Move the ball</span><span class="key">← → ↑ ↓</span>
+      </div>
+      <div class="instruction-line">
+        <span class="label">Adjust power</span><span class="key">W / S</span>
+      </div>
+      <div class="instruction-line">
+        <span class="label">Shoot</span><span class="key">Space</span>
+      </div>
+      <div class="instruction-line">
+        <span class="label">Reset</span><span class="key">R</span>
+      </div>
+      <div class="instruction-line">
+        <span class="label">Toggle camera</span><span class="key">O</span>
+      </div>
+      <div class="instruction-line">
+        <span class="label">Toggle timer</span><span class="key">T</span>
+      </div>
+    </div>
+
+    <!-- Summary table-->
+    <div id="summaryScreen">
+      <div id="summaryBox">
+        <h2>Time's up!</h2>
+        <p id="summaryAttempts">Total Attempts: 0</p>
+        <p id="summarySuccess">Successful Shots: 0</p>
+        <p id="summaryAccuracy">Accuracy: 0%</p>
+        <p id="summaryScore">Total Score: 0</p>
+        <p id="summaryHighScore">High Score 🏆 : 0</p>
+        <button id="restartBtn">Restart</button>
+      </div>
+    </div>
+  </body>
 </html>
